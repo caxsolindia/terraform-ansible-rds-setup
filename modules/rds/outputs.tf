@@ -13,3 +13,9 @@ output "username" {
   sensitive   = true
   description = "The username for the RDS instance"
 }
+
+output "password" {
+  value       = aws_db_instance.db_instance.password
+  sensitive   = true
+  description = "The password for the RDS instance"
+}

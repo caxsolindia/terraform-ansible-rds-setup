@@ -13,3 +13,10 @@ output "rds_username" {
   sensitive   = true
   description = "The username for the RDS instance"
 }
+
+output "rds_password" {
+  value       = module.rds.password
+  sensitive   = true
+  description = "The password for the RDS instance"
+}
+
