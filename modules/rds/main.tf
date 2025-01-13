@@ -10,48 +10,34 @@ resource "aws_db_instance" "db_instance" {
   skip_final_snapshot  = true
   publicly_accessible  = true
 
-  # provisioner "local-exec" {
-  #   command = "./update_inventory.sh"
-  # }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      echo "Sleeping for 2 minutes to ensure resources are ready..."
-      sleep 120
-      ./update_inventory.sh
-    EOT
-  }
 }
 
+resource "null_resource" "wait" {
+  provisioner "local-exec" {
+    command = <<EOT
+      sleep 240
+    EOT
+  }
 
+  depends_on = [aws_db_instance.db_instance]
+}
 
-# resource "aws_db_instance" "db_instance" {
-#   allocated_storage    = 10
-#   db_name              = var.db_name
-#   engine               = var.engine
-#   engine_version       = var.engine_version
-#   instance_class       = var.instance_class
-#   username             = var.username
-#   password             = var.password
-#   parameter_group_name = "default.postgres14"
-#   skip_final_snapshot  = true
-#   publicly_accessible  = true
+resource "null_resource" "update_inventoryc" {
+  provisioner "local-exec" {
+    command = <<EOT
+      bash ./ansible/update_inventory.sh
+    EOT
+  }
 
-#   # Wait for the DB instance to be ready before executing the provisioner
-#   depends_on = [aws_db_instance.db_instance]
+  depends_on = [null_resource.wait]
+}
 
-#   provisioner "local-exec" {
-#     command = <<EOT
-#     while true; do
-#         DB_ENDPOINT=$(terraform output -raw rds_endpoint 2>/dev/null)
-#         if [ ! -z "$DB_ENDPOINT" ]; then
-#             ./update_inventory.sh
-#             break
-#         else
-#             echo "Waiting for RDS endpoint to become available..."
-#             sleep 30
-#         fi
-#     done
-#     EOT
-#   }
-# }
+resource "null_resource" "run_ansible_playbook" {
+  provisioner "local-exec" {
+    command = <<EOT
+      ansible-playbook -i ./ansible/inventory.ini ./ansible/db_setup.yml
+    EOT
+  }
+
+  depends_on = [null_resource.update_inventoryc]
+}

@@ -1,0 +1,50 @@
+- name: Database Setup and Configuration
+  hosts: db
+  become: no
+  tasks:
+    - name: Install PostgreSQL client
+      ansible.builtin.package:
+        name: postgresql-client
+        state: present
+
+    - name: Ensure target database exists
+      community.postgresql.postgresql_db:
+        name: mydb
+        state: present
+        login_host: "{{ db_endpoint }}"
+        login_user: "{{ db_username }}"
+        login_password: "{{ db_password }}"
+
+    - name: Ensure application user exists
+      community.postgresql.postgresql_user:
+        name: app_user
+        password: app_password123
+        state: present
+        login_host: "{{ db_endpoint }}"
+        login_user: "{{ db_username }}"
+        login_password: "{{ db_password }}"
+
+    - name: Create a test table in the public schema
+      community.postgresql.postgresql_query:
+        db: mydb
+        query: "CREATE TABLE IF NOT EXISTS public.test_table (id SERIAL PRIMARY KEY, name TEXT);"
+        login_host: "{{ db_endpoint }}"
+        login_user: "{{ db_username }}"
+        login_password: "{{ db_password }}"
+
+    - name: Grant all privileges on all tables in the public schema to the user
+      community.postgresql.postgresql_query:
+        db: mydb
+        query: "GRANT ALL ON ALL TABLES IN SCHEMA public TO app_user;"
+        login_host: "{{ db_endpoint }}"
+        login_user: "{{ db_username }}"
+        login_password: "{{ db_password }}"
+
+    - name: Verify connection and list tables
+      ansible.builtin.shell:
+        cmd: "PGPASSWORD={{ db_password }} psql -h {{ db_endpoint }} -U {{ db_username }} -d mydb -c '\\dt'"
+
+    - name: Verify privileges granted to app_user
+      ansible.builtin.shell:
+        cmd: "PGPASSWORD={{ db_password }} psql -h {{ db_endpoint }} -U {{ db_username }} -d mydb -c \"SELECT grantee, table_schema, table_name, privilege_type FROM information_schema.role_table_grants WHERE grantee = 'app_user' AND table_schema = 'public';\""
+
