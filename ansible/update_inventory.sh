@@ -6,10 +6,15 @@ terraform init
 # Refresh the state to ensure outputs are available
 terraform refresh
 
-# Fetch the Terraform outputs
+# # Fetch the Terraform outputs
+# DB_ENDPOINT=$(terraform output -raw rds_endpoint)
+# DB_USERNAME=$(terraform output -raw rds_username)
+# DB_PASSWORD=$(terraform output -raw rds_password)
+
+# Fetch secrets from Vault
 DB_ENDPOINT=$(terraform output -raw rds_endpoint)
-DB_USERNAME=$(terraform output -raw rds_username)
-DB_PASSWORD=$(terraform output -raw rds_password)
+DB_USERNAME=$(vault kv get -field=db_username secret/db)
+DB_PASSWORD=$(vault kv get -field=db_password secret/db)
 
 DBE=$(echo $DB_ENDPOINT | cut -d':' -f1)
 
