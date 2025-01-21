@@ -82,10 +82,9 @@ This project demonstrates how to set up an AWS RDS PostgreSQL database using Ter
 │   ├── db_setup.yml
 │   ├── inventory.ini
 │   └── update_inventory.sh
-├── rds
-│   ├── main.tf
-│   ├── outputs.tf
-│   ├── variables.tf
+├── main.tf
+├── outputs.tf
+├── variables.tf
 ├── backend.tf
 ├── provider.tf
 ├── terraform.tfvars
@@ -170,7 +169,7 @@ This project demonstrates how to set up an AWS RDS PostgreSQL database using Ter
 ---
 
 ## Author
-[Parth Trivedi]
+[Parth]
 Junior DevOps Engineer
 
 ---
