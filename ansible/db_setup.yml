@@ -20,6 +20,7 @@
         name: app_user
         password: app_password123
         state: present
+        db: postgres  # Specify the database to connect to
         login_host: "{{ db_endpoint }}"
         login_user: "{{ db_username }}"
         login_password: "{{ db_password }}"

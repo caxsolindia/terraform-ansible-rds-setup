@@ -11,10 +11,14 @@ terraform refresh
 # DB_USERNAME=$(terraform output -raw rds_username)
 # DB_PASSWORD=$(terraform output -raw rds_password)
 
-# Fetch secrets from Vault
+# # Fetch secrets from Vault
+# DB_ENDPOINT=$(terraform output -raw rds_endpoint)
+# DB_USERNAME=$(vault kv get -field=db_username secret/db)
+# DB_PASSWORD=$(vault kv get -field=db_password secret/db)
+
 DB_ENDPOINT=$(terraform output -raw rds_endpoint)
-DB_USERNAME=$(vault kv get -field=db_username secret/db)
-DB_PASSWORD=$(vault kv get -field=db_password secret/db)
+DB_USERNAME=$(vault kv get -address=https://13.233.134.64:8200 -field=db_username secret/db)
+DB_PASSWORD=$(vault kv get -address=https://13.233.134.64:8200 -field=db_password secret/db)
 
 DBE=$(echo $DB_ENDPOINT | cut -d':' -f1)
 

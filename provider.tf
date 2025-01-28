@@ -12,6 +12,10 @@ provider "aws" {
 }
 
 
+# provider "vault" {
+#   address = "http://13.233.134.64:8200"
+# }
+
 provider "vault" {
-  address = "http://127.0.0.1:8200"
+  address = "https://13.233.134.64:8200"  # Use HTTP since Vault is not configured for HTTPS
 }
