@@ -1,6 +1,6 @@
 - name: Database Setup and Configuration
   hosts: db
-  become: no
+  become: yes
   tasks:
     - name: Install PostgreSQL client
       ansible.builtin.package:
