@@ -38,7 +38,9 @@ jobs:
       run: |
         export VAULT_ADDR=https://13.233.134.64:8200
         export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}  # Vault token stored in secrets
+        export VAULT_SKIP_VERIFY=true  # Disable TLS verification
         echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV  # Pass token to the environment
+        echo "VAULT_SKIP_VERIFY=true" >> $GITHUB_ENV  # Pass skip verify to the environment
 
     - name: Terraform Init
       run: terraform init
