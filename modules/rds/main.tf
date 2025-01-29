@@ -43,8 +43,25 @@ resource "null_resource" "update_inventoryc" {
   depends_on = [null_resource.wait]
 }
 
+# resource "null_resource" "run_ansible_playbook" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       ansible-playbook -i ./ansible/inventory.ini ./ansible/db_setup.yml
+#     EOT
+#   }
+
+#   depends_on = [null_resource.update_inventoryc]
+# }
+
+
 resource "null_resource" "run_ansible_playbook" {
   provisioner "local-exec" {
+    environment = {
+      db_endpoint = module.rds.endpoint  # Make sure this refers to the actual endpoint
+      db_username = data.vault_generic_secret.db_secrets.data["db_username"]
+      db_password = data.vault_generic_secret.db_secrets.data["db_password"]
+    }
+
     command = <<EOT
       ansible-playbook -i ./ansible/inventory.ini ./ansible/db_setup.yml
     EOT
