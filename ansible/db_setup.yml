@@ -7,6 +7,12 @@
         name: postgresql-client
         state: present
 
+    - name: Install psycopg2 for PostgreSQL interaction
+      ansible.builtin.pip:
+        name: psycopg2-binary
+        state: present
+      become: yes
+
     - name: Ensure target database exists
       community.postgresql.postgresql_db:
         name: mydb
