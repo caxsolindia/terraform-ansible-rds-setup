@@ -1,6 +1,6 @@
 - name: Database Setup and Configuration
   hosts: db
-  become: no
+  become: yes
   tasks:
     - name: Install PostgreSQL client
       become: yes
@@ -12,7 +12,6 @@
       ansible.builtin.pip:
         name: psycopg2-binary
         state: present
-      become: no
 
     - name: Ensure target database exists
       community.postgresql.postgresql_db:
