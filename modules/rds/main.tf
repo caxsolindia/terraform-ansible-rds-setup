@@ -26,7 +26,7 @@ resource "aws_db_instance" "db_instance" {
 resource "null_resource" "wait" {
   provisioner "local-exec" {
     command = <<EOT
-      sleep 240
+      sleep 120
     EOT
   }
 
