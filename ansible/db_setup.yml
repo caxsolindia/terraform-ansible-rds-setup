@@ -3,6 +3,7 @@
   become: no
   tasks:
     - name: Install PostgreSQL client
+      become: yes
       ansible.builtin.package:
         name: postgresql-client
         state: present
@@ -12,7 +13,7 @@
         name: psycopg2-binary
         state: present
       become: no
-      
+
     - name: Ensure target database exists
       community.postgresql.postgresql_db:
         name: mydb
