@@ -1,16 +1,70 @@
+# - name: Database Setup and Configuration
+#   hosts: db
+#   become: yes
+#   become_user: root  # Ensure that the user can execute commands as root without a password prompt
+#   gather_facts: false
+#   tasks:
+#     - name: Install PostgreSQL client
+#       become: yes
+#       ansible.builtin.package:
+#         name: postgresql-client
+#         state: present
+#         use: apt
+
+#     - name: Install psycopg2 for PostgreSQL interaction
+#       ansible.builtin.pip:
+#         name: psycopg2-binary
+#         state: present
+
+#     - name: Ensure target database exists
+#       community.postgresql.postgresql_db:
+#         name: mydb
+#         state: present
+#         login_host: "{{ db_endpoint }}"
+#         login_user: "{{ db_username }}"
+#         login_password: "{{ db_password }}"
+
+#     - name: Ensure application user exists
+#       community.postgresql.postgresql_user:
+#         name: app_user
+#         password: app_password123
+#         state: present
+#         db: postgres  # Specify the database to connect to
+#         login_host: "{{ db_endpoint }}"
+#         login_user: "{{ db_username }}"
+#         login_password: "{{ db_password }}"
+
+#     - name: Create a test table in the public schema
+#       community.postgresql.postgresql_query:
+#         db: mydb
+#         query: "CREATE TABLE IF NOT EXISTS public.test_table (id SERIAL PRIMARY KEY, name TEXT);"
+#         login_host: "{{ db_endpoint }}"
+#         login_user: "{{ db_username }}"
+#         login_password: "{{ db_password }}"
+
+#     - name: Grant all privileges on all tables in the public schema to the user
+#       community.postgresql.postgresql_query:
+#         db: mydb
+#         query: "GRANT ALL ON ALL TABLES IN SCHEMA public TO app_user;"
+#         login_host: "{{ db_endpoint }}"
+#         login_user: "{{ db_username }}"
+#         login_password: "{{ db_password }}"
+
+#     - name: Verify connection and list tables
+#       ansible.builtin.shell:
+#         cmd: "PGPASSWORD={{ db_password }} psql -h {{ db_endpoint }} -U {{ db_username }} -d mydb -c '\\dt'"
+
+#     - name: Verify privileges granted to app_user
+#       ansible.builtin.shell:
+#         cmd: "PGPASSWORD={{ db_password }} psql -h {{ db_endpoint }} -U {{ db_username }} -d mydb -c \"SELECT grantee, table_schema, table_name, privilege_type FROM information_schema.role_table_grants WHERE grantee = 'app_user' AND table_schema = 'public';\""
+
 - name: Database Setup and Configuration
   hosts: db
-  become: yes
+  become: no
   tasks:
     - name: Install PostgreSQL client
-      become: yes
       ansible.builtin.package:
         name: postgresql-client
-        state: present
-
-    - name: Install psycopg2 for PostgreSQL interaction
-      ansible.builtin.pip:
-        name: psycopg2-binary
         state: present
 
     - name: Ensure target database exists
@@ -26,7 +80,7 @@
         name: app_user
         password: app_password123
         state: present
-        db: postgres  # Specify the database to connect to
+        db: mydb  # Specify the target database here
         login_host: "{{ db_endpoint }}"
         login_user: "{{ db_username }}"
         login_password: "{{ db_password }}"
