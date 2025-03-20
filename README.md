@@ -3,7 +3,8 @@
 ## Project Overview
 This project demonstrates how to set up an AWS RDS PostgreSQL database using Terraform, manage database secrets with HashiCorp Vault, and automate post-deployment tasks with Ansible. The workflow ensures secure handling of credentials and simplifies database configuration.
 
-<img src="https://github.com/caxsolindia/terraform-ansible-rds-setup/blob/main/architecuture_diagram/vault-Page-3.drawio.png" />
+## Architecture
+<img src="https://github.com/caxsolindia/terraform-ansible-rds-setup/blob/main/architecuture_diagram/terraform_ansible_vault.png" />
 ---
 
 ## Table of Contents
